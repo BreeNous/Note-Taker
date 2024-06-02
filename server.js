@@ -4,7 +4,7 @@ const htmlRoutes = require('./routes/htmlRoutes');
 const { clog } = require('./middleware/clog');
 
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
 
 // Custom middleware
 app.use(clog);
