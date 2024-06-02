@@ -29,5 +29,20 @@ router.post('/notes', (req, res) => {
   }
 });
 
+// DELETE /api/notes/:id - Delete a note by ID from db.json
+router.delete('/notes/:id', (req, res) => {
+    const noteId = req.params.id;
+  
+    readFromFile(dbPath)
+      .then((data) => {
+        const notes = JSON.parse(data);
+        const filteredNotes = notes.filter((note) => note.id !== noteId);
+  
+        writeToFile(dbPath, filteredNotes);
+        res.json({ message: `Note ${noteId} has been deleted` });
+      })
+  });
+  
+
 module.exports = router;
 
