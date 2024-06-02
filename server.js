@@ -1,9 +1,13 @@
 const express = require('express');
 const apiRoutes = require('./routes/apiRoutes');
 const htmlRoutes = require('./routes/htmlRoutes');
+const { clog } = require('./middleware/clog');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Custom middleware
+app.use(clog);
 
 // Middleware to parse JSON and serve static files
 app.use(express.json());

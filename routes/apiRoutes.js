@@ -1,44 +1,33 @@
 const express = require('express');
-const fs = require('fs');
-const { v4: uuidv4 } = require('uuid'); // Import uuid for unique IDs
+const { readFromFile, readAndAppend } = require('../helpers/fsUtils');
+const { v4: uuidv4 } = require('uuid');
 
 const router = express.Router();
+const dbPath = './db/db.json';
 
 // GET /api/notes - Read and return all notes from db.json
 router.get('/notes', (req, res) => {
-    fs.readFile('db.json', 'utf8', (err, data) => {
-        if (err) {
-            console.error(err);
-            res.status(500).json({ error: 'Failed to read notes' });
-        } else {
-            res.json(JSON.parse(data));
-        }
-    });
+  readFromFile(dbPath).then((data) => res.json(JSON.parse(data)));
 });
 
 // POST /api/notes - Add a new note to db.json
 router.post('/notes', (req, res) => {
-    const newNote = req.body;
-    newNote.id = uuidv4(); // Assign a unique ID to the new note
+  const { title, text } = req.body;
 
-    fs.readFile('db.json', 'utf8', (err, data) => {
-        if (err) {
-            console.error(err);
-            res.status(500).json({ error: 'Failed to read notes' });
-        } else {
-            const notes = JSON.parse(data);
-            notes.push(newNote);
+  if (title && text) {
+    const newNote = {
+      title,
+      text,
+      id: uuidv4(),
+    };
 
-            fs.writeFile('db.json', JSON.stringify(notes, null, 2), (err) => {
-                if (err) {
-                    console.error(err);
-                    res.status(500).json({ error: 'Failed to save note' });
-                } else {
-                    res.json(newNote);
-                }
-            });
-        }
-    });
+    readAndAppend(newNote, dbPath);
+
+    res.json(newNote);
+  } else {
+    res.status(400).json({ error: 'Note title and text are required' });
+  }
 });
 
 module.exports = router;
+
