@@ -1,5 +1,5 @@
 const express = require('express');
-const { readFromFile, readAndAppend } = require('../helpers/fsUtils');
+const { readFromFile, writeToFile, readAndAppend } = require('../helpers/fsUtils');
 const { v4: uuidv4 } = require('uuid');
 
 const router = express.Router();
@@ -28,6 +28,23 @@ router.post('/notes', (req, res) => {
     res.error ('Note title and text are required' );
   }
 });
+
+// DELETE /api/notes/:id - Delete a note by ID from db.json
+router.delete('/notes/:id', (req, res) => {
+    const noteId = req.params.id;
+  
+    readFromFile(dbPath)
+      .then((data) => JSON.parse(data))
+      .then((json) => {
+        const filteredNotes = json.filter((note) => note.id !== noteId);
+
+        writeToFile(dbPath, filteredNotes);
+
+        res.json({ message: `Note ${noteId} has been deleted` });
+      })
+        
+});
+  
 
 module.exports = router;
 
