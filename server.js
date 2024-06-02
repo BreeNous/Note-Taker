@@ -1,10 +1,10 @@
 const express = require('express');
-const apiRoutes = require('./routes/apiRoutes');
-const htmlRoutes = require('./routes/htmlRoutes');
+const path = require('path');
 const { clog } = require('./middleware/clog');
+const routes = require('./routes'); // Import the index.js file from the routes folder
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 // Custom middleware
 app.use(clog);
@@ -13,11 +13,8 @@ app.use(clog);
 app.use(express.json());
 app.use(express.static('public'));
 
-// Use API routes
-app.use('/api', apiRoutes);
-
-// Use HTML routes
-app.use('/', htmlRoutes);
+// Use the routes defined in the index.js file
+app.use(routes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT} link: http://localhost:${PORT}`);
