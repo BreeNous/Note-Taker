@@ -4,7 +4,7 @@ const htmlRoutes = require('./routes/htmlRoutes');
 const { clog } = require('./middleware/clog');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 // Custom middleware
 app.use(clog);
@@ -20,5 +20,5 @@ app.use('/api', apiRoutes);
 app.use('/', htmlRoutes);
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT} link: http://localhost:${PORT}`);
 });
